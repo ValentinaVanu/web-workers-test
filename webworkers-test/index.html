@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Workers</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../video-pages/main.css">
+</head>
+<body>
+    <header>
+        <h1>Web Workers</h1>
+    </header>
+    <main>
+        <pre id="output"></pre>
+    </main>
+    <script>
+        let output = document.getElementById('output');
+        let worker;
+        
+        document.addEventListener('DOMContentLoaded', init);
+        
+        function init(){
+            worker = new Worker('web-work.js');
+            worker.addEventListener('message', workerMessaged);
+            worker.addEventListener('error', workerError);
+            
+            //worker.postMessage('Get Started');
+            
+            document.body.addEventListener('click', ()=>{
+                //send another message to the worker
+                //worker.postMessage('Other');
+                worker.postMessage({'do':'fetch'});
+            })
+        }
+        
+        function workerMessaged(ev){
+            let data = ev.data;
+            
+            output.textContent += JSON.stringify(data, null, 2) + '\n';
+        }
+        
+        function workerError(err){
+            console.log(err.message, err.filename);
+        }
+        
+    </script>
+</body>
+</html>
